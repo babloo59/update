@@ -4,11 +4,9 @@ import React from 'react'
 
 const VerifyEmailPage = () => {
   return (
-    <PrivateRoute>
       <div>
         <VerifyEmailForm />
       </div>
-    </PrivateRoute>
   )
 }
 

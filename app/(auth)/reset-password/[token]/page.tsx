@@ -1,25 +1,31 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
-const ForgetPasswordPage = () => {
-  const [email, setEmail] = useState<string>("");
+const ResetPasswordPage = ({ params }: { params: { token: string } }) => {
+  const [newPassword, setNewPassword] = useState<string>("");
   const [message, setMessage] = useState<string>("");
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/auth/forget-password", {
+      const response = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ token: params.token, newPassword }),
       });
 
       const data = await response.json();
-      setMessage(data.message || "Check your email for the reset link.");
+      setMessage(data.message);
+
+      if (response.ok) {
+        setTimeout(() => router.push("/login"), 3000);
+      }
     } catch (error) {
       setMessage("An error occurred. Please try again later.");
     }
@@ -27,13 +33,13 @@ const ForgetPasswordPage = () => {
 
   return (
     <div className="p-6 max-w-md mx-auto">
-      <h2 className="text-2xl font-semibold mb-4">Forget Password</h2>
+      <h2 className="text-2xl font-semibold mb-4">Reset Password</h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="password"
+          placeholder="Enter your new password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
           required
           className="w-full p-3 border rounded"
         />
@@ -41,7 +47,7 @@ const ForgetPasswordPage = () => {
           type="submit"
           className="bg-blue-500 text-white py-2 px-4 rounded w-full"
         >
-          Send Reset Link
+          Reset Password
         </button>
       </form>
       {message && <p className="mt-4 text-center">{message}</p>}
@@ -49,4 +55,4 @@ const ForgetPasswordPage = () => {
   );
 };
 
-export default ForgetPasswordPage;
+export default ResetPasswordPage;
