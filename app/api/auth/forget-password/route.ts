@@ -15,7 +15,7 @@ export async function POST(req: Request) {
 
     // Generate the reset token and store it
     const resetToken = await createResetPasswordToken(email);
-    const resetLink = `${process.env.BASE_URL}/reset-password/${resetToken}`;
+    // const resetLink = `${process.env.BASE_URL}/reset-password/${resetToken}`;
 
     // Send email with reset link
     await sendEmail(

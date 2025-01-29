@@ -24,7 +24,7 @@ const ResetPasswordPage = ({ params }: { params: { token: string } }) => {
       setMessage(data.message);
 
       if (response.ok) {
-        setTimeout(() => router.push("/login"), 3000);
+        setTimeout(() => router.push("/sign-in"), 3000);
       }
     } catch (error) {
       setMessage("An error occurred. Please try again later.");

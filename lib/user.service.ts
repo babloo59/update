@@ -10,13 +10,14 @@ export const findUserByEmail = async (email: string) => {
 // Create a reset password token
 export const createResetPasswordToken = async (email: string) => {
   const resetToken = crypto.randomBytes(32).toString("hex");
-  const hashedToken = await bcrypt.hash(resetToken, 10);
+  // const hashedToken = await bcrypt.hash(resetToken, 10);
   const expires = new Date(Date.now() + 3600000); // 1 hour
+  // console.log(resetToken,"function");
 
   await database.resetPasswordToken.create({
     data: {
       email,
-      token: hashedToken,
+      token: resetToken,
       expires,
     },
   });
@@ -25,29 +26,30 @@ export const createResetPasswordToken = async (email: string) => {
 };
 
 // Find reset password token by email and token
-export const findResetPasswordToken = async (id:string, token: string) => {
-  return await database.resetPasswordToken.findUnique({
+export const findResetPasswordToken = async (token: string) => {
+  return await database.resetPasswordToken.findFirst({
     where: {
-      id,
-      token
-    },
-  });
-};
-
-// Remove reset password token after use
-export const removeResetPasswordToken = async (id:string, token: string) => {
-  await database.resetPasswordToken.delete({
-    where:{
-      id,
       token,
     },
   });
 };
 
+// Remove reset password token after use
+// export const removeResetPasswordToken = async (email: string, token: string) => {
+//   await database.resetPasswordToken.delete({
+//     where: {
+//       email_token: {
+//         email,
+//         token,
+//       },
+//     },
+//   });
+// };
+// 
 // Update user password
-export const updatePassword = async (id: string, hashedPassword: string) => {
+export const updatePassword = async (email: string, hashedPassword: string) => {
   return await database.user.update({
-    where: { id },
+    where: { email },
     data: {
       password: hashedPassword,
     },
